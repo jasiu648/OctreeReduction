@@ -43,18 +43,6 @@ namespace OctreeReduction
             return Leaves;
         }
 
-        public int GetPixelCount()
-        {
-            int sum = pixelCount;
-
-            foreach(var child in childrenNodes)
-            {
-                sum += child.pixelCount;
-            }
-
-            return sum;
-        }
-
         public void AddColor(Color color, int level, Quantizer parent)
         {
             if(level >= parent.MAX_DEPTH)
@@ -62,6 +50,7 @@ namespace OctreeReduction
                 this.color.Red += color.Red;
                 this.color.Blue += color.Blue;
                 this.color.Green += color.Green;
+                if (this.color.Red > 255)
                 pixelCount++;
                 return;
             }

@@ -87,7 +87,7 @@ namespace OctreeReduction
                 }
 
             int c = 256;
-            var palette = Octree.MakePalette(29);
+            var palette = Octree.MakePalette(256);
             MessageBox.Show(palette.Count.ToString());
             //palette
             imageAlongBits = new Int32[c];
@@ -108,26 +108,26 @@ namespace OctreeReduction
             alongPicture.Image = imageAlongBitmap;
 
             //result
-            imageAfterBits = new Int32[imageHeight * imageWidth];
-            imageAfterBitsHandle = GCHandle.Alloc(imageAfterBits, GCHandleType.Pinned);
+            //imageAfterBits = new Int32[imageHeight * imageWidth];
+            //imageAfterBitsHandle = GCHandle.Alloc(imageAfterBits, GCHandleType.Pinned);
 
-            int index = 0;
-            Color color2;
-            for (int x = 0; x < imageWidth; x++)
-                for (int y = 0; y < imageHeight; y++)
-                {
-                    index = Octree.GetPaletteIndex(IntToRGB(imageBits[x + y * imageWidth]));
-                    color2 = palette[index];
-                    imageAfterBits[x + y * imageWidth] = RGBToInt(color2);
-                }
+            //int index = 0;
+            //Color color2;
+            //for (int x = 0; x < imageWidth; x++)
+            //    for (int y = 0; y < imageHeight; y++)
+            //    {
+            //        index = Octree.GetPaletteIndex(IntToRGB(imageBits[x + y * imageWidth]));
+            //        color2 = palette[index];
+            //        imageAfterBits[x + y * imageWidth] = RGBToInt(color2);
+            //    }
 
-            imageAfterBitmap = new Bitmap(imageWidth,
-                                          imageHeight,
-                                          imageWidth * 4,
-                                          System.Drawing.Imaging.PixelFormat.Format32bppPArgb,
-                                          imageAfterBitsHandle.AddrOfPinnedObject());
+            //imageAfterBitmap = new Bitmap(imageWidth,
+            //                              imageHeight,
+            //                              imageWidth * 4,
+            //                              System.Drawing.Imaging.PixelFormat.Format32bppPArgb,
+            //                              imageAfterBitsHandle.AddrOfPinnedObject());
 
-            afterPicture.Image = imageAfterBitmap;
+            //afterPicture.Image = imageAfterBitmap;
         }
 
         private Color GetObjectColorAtPos(int x, int y)
