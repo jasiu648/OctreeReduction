@@ -9,32 +9,20 @@ namespace OctreeReduction
 {
     public class OctreeNode
     {
-        private readonly int _maxChildrenNumber = 8;
-
-        List<OctreeNode> childrenNodes;
-        Color color;
+        OctreeNode[] childrenNodes;
+        public Color color;
         int pixelCount;
         public int palletteIndex;
 
-        public OctreeNode(OctreeNode parent, int level)
+        public OctreeNode(int level, Quantizer parent)
         {
             this.color = new Color(0, 0, 0, 0);
             this.pixelCount = 0;
             this.palletteIndex = 0;
-            this.childrenNodes = new List<OctreeNode>();
+            this.childrenNodes = new OctreeNode[8];
 
-            if (level < Quantizer.MAX_DEPTH - 1)
-                parent.AddLevelNode(level);
-        }
-
-        private void AddLevelNode(int level)
-        {
-            throw new NotImplementedException();
-        }
-
-        public OctreeNode(int level, OctreeNode parent)
-        {
-            throw new NotImplementedException();
+            if (level < parent.MAX_DEPTH - 1)
+                parent.AddLevelNode(level, this);
         }
 
         public bool IsLeaf() => pixelCount > 0;
@@ -42,6 +30,7 @@ namespace OctreeReduction
             List<OctreeNode> Leaves = new List<OctreeNode>();
             foreach(var child in childrenNodes)
             {
+                if(child is null) continue;
                 if (child.IsLeaf())
                 {
                     Leaves.Add(child);
@@ -56,7 +45,7 @@ namespace OctreeReduction
 
         public int GetPixelCount()
         {
-            int sum = this.pixelCount;
+            int sum = pixelCount;
 
             foreach(var child in childrenNodes)
             {
@@ -66,14 +55,14 @@ namespace OctreeReduction
             return sum;
         }
 
-        public void AddColor(Color color, int level, OctreeNode parent)
+        public void AddColor(Color color, int level, Quantizer parent)
         {
-            if(level >= Quantizer.MAX_DEPTH)
+            if(level >= parent.MAX_DEPTH)
             {
                 this.color.Red += color.Red;
                 this.color.Blue += color.Blue;
                 this.color.Green += color.Green;
-                this.pixelCount++;
+                pixelCount++;
                 return;
             }
 
@@ -110,7 +99,7 @@ namespace OctreeReduction
 
         public int GetPalletteIndex(Color color, int level)
         {
-            if (this.IsLeaf())
+            if (IsLeaf())
                 return palletteIndex;
 
             int index = GetColorIndexForLevel(color, level);

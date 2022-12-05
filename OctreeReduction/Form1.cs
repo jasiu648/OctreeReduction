@@ -1,3 +1,4 @@
+using System.Drawing.Design;
 using System.Runtime.InteropServices;
 
 namespace OctreeReduction
@@ -10,8 +11,6 @@ namespace OctreeReduction
 
         private int imageHeight;
         private int imageWidth;
-
-        private Int32[] imageBitsTemp;
 
         private Bitmap imageAlongBitmap;
         private Int32[] imageAlongBits;
@@ -78,7 +77,7 @@ namespace OctreeReduction
         private void Reduce()
         {
             //build octree
-            var Octree = new Quantizer();
+            var Octree = new Quantizer(8);
 
             for (int x = 0; x < imageWidth; x++)
                 for (int y = 0; y < imageHeight; y++)
@@ -87,10 +86,48 @@ namespace OctreeReduction
                     Octree.AddColor(color);
                 }
 
-            var palette = Octree.MakePalette(256);
+            int c = 256;
+            var palette = Octree.MakePalette(29);
+            MessageBox.Show(palette.Count.ToString());
+            //palette
+            imageAlongBits = new Int32[c];
+            imageAlongBitsHandle = GCHandle.Alloc(imageAlongBits, GCHandleType.Pinned);
 
+            int index1 = 0;
+            foreach(var color in palette)
+            {
+                imageAlongBits[index1] = RGBToInt(color);
+            }
+
+            imageAlongBitmap = new Bitmap(imageWidth,
+                                          imageHeight,
+                                          imageWidth * 4,
+                                          System.Drawing.Imaging.PixelFormat.Format32bppPArgb,
+                                          imageAlongBitsHandle.AddrOfPinnedObject());
+
+            alongPicture.Image = imageAlongBitmap;
+
+            //result
             imageAfterBits = new Int32[imageHeight * imageWidth];
+            imageAfterBitsHandle = GCHandle.Alloc(imageAfterBits, GCHandleType.Pinned);
 
+            int index = 0;
+            Color color2;
+            for (int x = 0; x < imageWidth; x++)
+                for (int y = 0; y < imageHeight; y++)
+                {
+                    index = Octree.GetPaletteIndex(IntToRGB(imageBits[x + y * imageWidth]));
+                    color2 = palette[index];
+                    imageAfterBits[x + y * imageWidth] = RGBToInt(color2);
+                }
+
+            imageAfterBitmap = new Bitmap(imageWidth,
+                                          imageHeight,
+                                          imageWidth * 4,
+                                          System.Drawing.Imaging.PixelFormat.Format32bppPArgb,
+                                          imageAfterBitsHandle.AddrOfPinnedObject());
+
+            afterPicture.Image = imageAfterBitmap;
         }
 
         private Color GetObjectColorAtPos(int x, int y)

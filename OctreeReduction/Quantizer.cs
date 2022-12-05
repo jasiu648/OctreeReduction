@@ -8,18 +8,20 @@ namespace OctreeReduction
 {
     public class Quantizer
     {
-        public static readonly int MAX_DEPTH = 8;
+        public readonly int MAX_DEPTH = 8;
         public OctreeNode Root;
-        public Dictionary<int, List<OctreeNode>> Levels;
-        public Quantizer() 
+        public Dictionary<int, OctreeNode[]> Levels;
+        public Quantizer(int maxDepth = 8) 
         {
-            Root = new OctreeNode(0, Root);
-            Levels = new Dictionary<int, List<OctreeNode>>();
+            Levels = new Dictionary<int, OctreeNode[]>();
+            MAX_DEPTH = maxDepth;
 
-            for(int i = 0; i < MAX_DEPTH; i++)
+            for (int i = 0; i < MAX_DEPTH; i++)
             {
-                Levels.Add(i, new List<OctreeNode>());
+                Levels.Add(i, new OctreeNode[8]);
             }
+
+            Root = new OctreeNode(0, this);
         }
 
         public List<OctreeNode> GetLeaves()
@@ -29,12 +31,21 @@ namespace OctreeReduction
 
         public void AddLevelNode(int level, OctreeNode node)
         {
-            Levels[level].Add(node);
+            for(int i = 0; i < 8; i++)
+            {
+                if (Levels[level][i] is not null)
+                {
+                    Levels[level][i] = node;
+                    break;
+                }
+
+            }
         }
 
         public void AddColor(Color color)
         {
-            Root.AddColor(color, 0, Root);
+            Root.AddColor(color, 0, this);
+
         }
 
         public List<Color> MakePalette(int colorCount) 
@@ -42,13 +53,15 @@ namespace OctreeReduction
             List<Color> Palette = new List<Color>();
             int paletteIndex = 0;
             int leafCount = Root.GetLeaves().Count;
-
+            
             for(int i = MAX_DEPTH - 1; i >= 0; i--)
             {
                 if (Levels[i] is not null)
                 {
                     foreach(var node in Levels[i])
                     {
+                        if(node is null) continue;
+
                         leafCount -= node.RemoveLeaves();
                         if (leafCount <= colorCount)
                             break;
@@ -56,7 +69,7 @@ namespace OctreeReduction
                     if (leafCount <= colorCount)
                         break;
 
-                    Levels[i] = new List<OctreeNode>();
+                    Levels[i] = new OctreeNode[8];
                 }
             }
 
