@@ -1,5 +1,9 @@
+using System.Drawing;
+using System;
 using System.Drawing.Design;
 using System.Runtime.InteropServices;
+using System.Reflection;
+using HSV;
 
 namespace OctreeReduction
 {
@@ -11,6 +15,8 @@ namespace OctreeReduction
         private int imageHeight;
         private int imageWidth;
 
+        private Bitmap hsvBitmap;
+
         private Bitmap imageAlongBitmap;
 
         private Bitmap imageAfterBitmap;
@@ -19,6 +25,8 @@ namespace OctreeReduction
 
         private int colorsCount = 256;
 
+        private int Value = 50;
+
         public Form1()
         {
             imageHeight = 300;
@@ -26,6 +34,48 @@ namespace OctreeReduction
             InitializeComponent();
             LoadImage(DEFAULT_IMAGE_PATH);
             imageColors = new Color[imageHeight * imageWidth];
+        }
+        private void button1_Click(object sender, EventArgs e)
+        {
+            GenerateHSV();
+        }
+
+        private void trackBar1_ValueChanged(object sender, EventArgs e)
+        {
+            Value = trackBar1.Value;
+            trackLabel.Text = Value.ToString();
+        }
+        public void GenerateHSV()
+        {
+            hsvBitmap = new Bitmap(300, 300);
+            HSVbox.Image = hsvBitmap;
+
+            int middle = 150;
+            int radius = 100;
+            int radiusS = radius * radius;
+            for (int x = 0; x < 300; x++)
+                for (int y = 0; y < 300; y++)
+                {
+                    
+                    if((x - middle) * (x - middle) + (y-middle) * (y - middle) < radiusS)
+                    {                           
+                        double h1 = Math.Asin( (middle - x) / Math.Sqrt((y - middle) * (y - middle) + (x - middle) * (x - middle)));
+                        
+                        h1 += (Math.PI / 2);
+                        double h = h1 * (180 / Math.PI);
+                        if(y > middle)
+                        {
+                            h = h + 2* (180 - h);
+                        }
+                        if (x == middle && y == middle)
+                            h = 0;
+                        hsvBitmap.SetPixel(x, y, HSV.HSV.HsvToRgb(h, Math.Sqrt((y - middle) * (y - middle) + (x - middle) * (x - middle)) / 100, (double)Value / 100));
+                    }
+                    else
+                    {
+                        hsvBitmap.SetPixel(x, y, System.Drawing.Color.White);
+                    }
+                }
         }
 
         private void pictureBox1_Click(object sender, EventArgs e)
@@ -62,8 +112,39 @@ namespace OctreeReduction
         private void reduceButton_Click(object sender, EventArgs e)
         {
             Reduce();
+            ReduceAlong();
         }
 
+        private void ReduceAlong()
+        {
+            var OctreeAlong = new Quantizer(4);
+            int index;
+            
+            imageAlongBitmap = new Bitmap(imageWidth,
+                                          imageHeight);
+
+            for (int x = 0; x < imageWidth; x++)
+                for (int y = 0; y < imageHeight; y++)
+                {
+                    var color = imageBitmap.GetPixel(x, y);
+                    OctreeAlong.AddColor(new Color(color.R, color.G, color.B));
+                    if (OctreeAlong.GetLeaves().Count > colorsCount)
+                    {
+                        OctreeAlong.AdjustLeaves(128);
+                    }
+                }
+
+            var paletteAlong = OctreeAlong.MakePalette(colorsCount);
+            Color color2;
+            for (int x = 0; x < imageWidth; x++)
+                for (int y = 0; y < imageHeight; y++)
+                {
+                    index = OctreeAlong.GetPaletteIndex(imageColors[x + y * imageWidth]);
+                    color2 = paletteAlong[index];
+                    imageAlongBitmap.SetPixel(x, y, System.Drawing.Color.FromArgb(color2.Red, color2.Green, color2.Blue));
+                }
+            alongPicture.Image = imageAlongBitmap;
+        }
         private void Reduce()
         {
             //build octrees
@@ -92,46 +173,6 @@ namespace OctreeReduction
                     imageAfterBitmap.SetPixel(x, y, System.Drawing.Color.FromArgb(color2.Red, color2.Green, color2.Blue));
                 }
             afterPicture.Image = imageAfterBitmap;
-
-
-            var OctreeAlong = new Quantizer(5);
-
-            imageAlongBitmap = new Bitmap(imageWidth,
-                                          imageHeight);
-
-            for (int x = 0; x < imageWidth; x++)
-                for (int y = 0; y < imageHeight; y++)
-                {
-                    var color = imageBitmap.GetPixel(x, y);
-                    //imageColors[x + y * imageWidth] = new Color(color.R, color.G, color.B);
-                    OctreeAlong.AddColor(new Color(color.R, color.G, color.B));
-                    if (OctreeAlong.GetLeaves().Count > colorsCount)
-                    {
-                        OctreeAlong.AdjustLeaves(16);
-                    }
-                }
-
-            var paletteAlong = OctreeAlong.MakePalette(colorsCount);
-
-            for (int x = 0; x < imageWidth; x++)
-                for (int y = 0; y < imageHeight; y++)
-                {
-                    index = OctreeAlong.GetPaletteIndex(imageColors[x + y * imageWidth]);
-                    color2 = paletteAlong[index];
-                    imageAlongBitmap.SetPixel(x, y, System.Drawing.Color.FromArgb(color2.Red, color2.Green, color2.Blue));
-                }
-
-            alongPicture.Image = imageAlongBitmap;
-        }
-
-        private static Color IntToRGB(int color)
-        {
-            int R, G, B;
-            R = (color & 0xff0000) >> 16;
-            G = (color & 0xff00) >> 8;
-            B = (color & 0xff);
-            return new Color(R, G, B);
-
         }
 
         private void textBox1_TextChanged(object sender, EventArgs e)
@@ -145,5 +186,7 @@ namespace OctreeReduction
                     MessageBox.Show("Please provide valid number of colors");
             }
         }
+
+       
     }
 }

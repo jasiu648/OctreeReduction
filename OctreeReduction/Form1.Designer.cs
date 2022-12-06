@@ -37,9 +37,15 @@
             this.reduceButton = new System.Windows.Forms.Button();
             this.textBox1 = new System.Windows.Forms.TextBox();
             this.label3 = new System.Windows.Forms.Label();
+            this.HSVbox = new System.Windows.Forms.PictureBox();
+            this.button1 = new System.Windows.Forms.Button();
+            this.trackBar1 = new System.Windows.Forms.TrackBar();
+            this.trackLabel = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.mainPicture)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.afterPicture)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.alongPicture)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.HSVbox)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.trackBar1)).BeginInit();
             this.SuspendLayout();
             // 
             // mainPicture
@@ -122,11 +128,52 @@
             this.label3.TabIndex = 9;
             this.label3.Text = "Color count:";
             // 
+            // HSVbox
+            // 
+            this.HSVbox.Location = new System.Drawing.Point(48, 419);
+            this.HSVbox.Name = "HSVbox";
+            this.HSVbox.Size = new System.Drawing.Size(300, 300);
+            this.HSVbox.TabIndex = 10;
+            this.HSVbox.TabStop = false;
+            // 
+            // button1
+            // 
+            this.button1.Location = new System.Drawing.Point(382, 690);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(126, 29);
+            this.button1.TabIndex = 11;
+            this.button1.Text = "Generate";
+            this.button1.UseVisualStyleBackColor = true;
+            this.button1.Click += new System.EventHandler(this.button1_Click);
+            // 
+            // trackBar1
+            // 
+            this.trackBar1.Location = new System.Drawing.Point(382, 593);
+            this.trackBar1.Maximum = 100;
+            this.trackBar1.Name = "trackBar1";
+            this.trackBar1.Size = new System.Drawing.Size(130, 56);
+            this.trackBar1.TabIndex = 12;
+            this.trackBar1.Value = 50;
+            this.trackBar1.ValueChanged += new System.EventHandler(this.trackBar1_ValueChanged);
+            // 
+            // trackLabel
+            // 
+            this.trackLabel.AutoSize = true;
+            this.trackLabel.Location = new System.Drawing.Point(433, 642);
+            this.trackLabel.Name = "trackLabel";
+            this.trackLabel.Size = new System.Drawing.Size(25, 20);
+            this.trackLabel.TabIndex = 13;
+            this.trackLabel.Text = "50";
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1242, 680);
+            this.ClientSize = new System.Drawing.Size(1242, 753);
+            this.Controls.Add(this.trackLabel);
+            this.Controls.Add(this.trackBar1);
+            this.Controls.Add(this.button1);
+            this.Controls.Add(this.HSVbox);
             this.Controls.Add(this.label3);
             this.Controls.Add(this.textBox1);
             this.Controls.Add(this.reduceButton);
@@ -141,6 +188,8 @@
             ((System.ComponentModel.ISupportInitialize)(this.mainPicture)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.afterPicture)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.alongPicture)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.HSVbox)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.trackBar1)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -157,5 +206,9 @@
         private Button reduceButton;
         private TextBox textBox1;
         private Label label3;
+        private PictureBox HSVbox;
+        private Button button1;
+        private TrackBar trackBar1;
+        private Label trackLabel;
     }
 }
