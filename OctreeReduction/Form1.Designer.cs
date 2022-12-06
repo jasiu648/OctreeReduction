@@ -44,33 +44,33 @@
             // 
             // mainPicture
             // 
-            this.mainPicture.Location = new System.Drawing.Point(12, 20);
+            this.mainPicture.Location = new System.Drawing.Point(48, 23);
             this.mainPicture.Name = "mainPicture";
-            this.mainPicture.Size = new System.Drawing.Size(600, 338);
+            this.mainPicture.Size = new System.Drawing.Size(460, 300);
             this.mainPicture.TabIndex = 0;
             this.mainPicture.TabStop = false;
             this.mainPicture.Click += new System.EventHandler(this.pictureBox1_Click);
             // 
             // afterPicture
             // 
-            this.afterPicture.Location = new System.Drawing.Point(602, 344);
+            this.afterPicture.Location = new System.Drawing.Point(654, 23);
             this.afterPicture.Name = "afterPicture";
-            this.afterPicture.Size = new System.Drawing.Size(600, 338);
+            this.afterPicture.Size = new System.Drawing.Size(460, 300);
             this.afterPicture.TabIndex = 1;
             this.afterPicture.TabStop = false;
             // 
             // alongPicture
             // 
-            this.alongPicture.Location = new System.Drawing.Point(31, 392);
+            this.alongPicture.Location = new System.Drawing.Point(654, 349);
             this.alongPicture.Name = "alongPicture";
-            this.alongPicture.Size = new System.Drawing.Size(460, 290);
+            this.alongPicture.Size = new System.Drawing.Size(460, 300);
             this.alongPicture.TabIndex = 2;
             this.alongPicture.TabStop = false;
             // 
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(778, 321);
+            this.label1.Location = new System.Drawing.Point(778, 326);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(208, 20);
             this.label1.TabIndex = 4;
