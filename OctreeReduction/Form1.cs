@@ -8,6 +8,7 @@ namespace OctreeReduction
         private Bitmap imageBitmap;
         private Int32[] imageBits;
         private GCHandle imageBitsHandle;
+        private Color[] imageColors;
 
         private int imageHeight;
         private int imageWidth;
@@ -26,8 +27,8 @@ namespace OctreeReduction
 
         public Form1()
         {
-            imageHeight = 290;
-            imageWidth = 460;
+            imageHeight = 338;
+            imageWidth = 600;
             InitializeComponent();
             LoadImage(DEFAULT_IMAGE_PATH);
 
@@ -56,12 +57,13 @@ namespace OctreeReduction
             Image image = new Bitmap(fileName);
 
             imageBits = new Int32[imageHeight * imageWidth];
-            imageBitsHandle = GCHandle.Alloc(imageBits, GCHandleType.Pinned);
+            imageColors = new Color[imageHeight * imageWidth];
+            //imageBitsHandle = GCHandle.Alloc(imageBits, GCHandleType.Pinned);
             imageBitmap = new Bitmap(imageWidth,
-                                          imageHeight,
-                                          imageWidth * 4,
-                                          System.Drawing.Imaging.PixelFormat.Format32bppPArgb,
-                                          imageBitsHandle.AddrOfPinnedObject());
+                                          imageHeight);
+                                          //,imageWidth * 4 ,
+                                          //System.Drawing.Imaging.PixelFormat.Format32bppPArgb,
+                                          //imageBitsHandle.AddrOfPinnedObject());
 
             Graphics graphics = Graphics.FromImage(imageBitmap);
             graphics.DrawImage(image, 0, 0, imageWidth, imageHeight);
@@ -79,24 +81,29 @@ namespace OctreeReduction
             //build octree
             var Octree = new Quantizer(8);
 
+            //var Octree2 = new Quantizer(8);
+
             for (int x = 0; x < imageWidth; x++)
                 for (int y = 0; y < imageHeight; y++)
                 {
-                    var color = GetObjectColorAtPos(x, y);
-                    Octree.AddColor(color);
+                    var color = imageBitmap.GetPixel(x, y);
+                    imageColors[x + y * imageWidth] = new Color(color.R, color.G, color.B);
+                    Octree.AddColor(new Color(color.R,color.G,color.B));
                 }
 
             int c = 256;
             var palette = Octree.MakePalette(256);
-            MessageBox.Show(palette.Count.ToString());
+
             //palette
             imageAlongBits = new Int32[c];
             imageAlongBitsHandle = GCHandle.Alloc(imageAlongBits, GCHandleType.Pinned);
-
+            
+            
             int index1 = 0;
-            foreach(var color in palette)
+            foreach (var color in palette)
             {
                 imageAlongBits[index1] = RGBToInt(color);
+                index1++;
             }
 
             imageAlongBitmap = new Bitmap(imageWidth,
@@ -105,28 +112,32 @@ namespace OctreeReduction
                                           System.Drawing.Imaging.PixelFormat.Format32bppPArgb,
                                           imageAlongBitsHandle.AddrOfPinnedObject());
 
+
             alongPicture.Image = imageAlongBitmap;
 
             //result
             //imageAfterBits = new Int32[imageHeight * imageWidth];
             //imageAfterBitsHandle = GCHandle.Alloc(imageAfterBits, GCHandleType.Pinned);
 
-            //int index = 0;
+          
+
+            //imageAfterBitmap = new Bitmap(imageWidth,
+            //                              imageHeight);
+            ////imageWidth * 4,
+            ////System.Drawing.Imaging.PixelFormat.Format32bppPArgb,
+            ////imageAfterBitsHandle.AddrOfPinnedObject());
+
+            //int index;
             //Color color2;
             //for (int x = 0; x < imageWidth; x++)
             //    for (int y = 0; y < imageHeight; y++)
             //    {
-            //        index = Octree.GetPaletteIndex(IntToRGB(imageBits[x + y * imageWidth]));
+            //        index = Octree.GetPaletteIndex(imageColors[x + y * imageWidth]);
+            //        //index = Octree.GetPaletteIndex(IntToRGB(imageBits[x + y * imageWidth]));
             //        color2 = palette[index];
-            //        imageAfterBits[x + y * imageWidth] = RGBToInt(color2);
+            //        //imageAfterBits[x + y * imageWidth] = RGBToInt(color2);
+            //        imageAfterBitmap.SetPixel(x, y, System.Drawing.Color.FromArgb(color2.Red, color2.Green, color2.Blue));
             //    }
-
-            //imageAfterBitmap = new Bitmap(imageWidth,
-            //                              imageHeight,
-            //                              imageWidth * 4,
-            //                              System.Drawing.Imaging.PixelFormat.Format32bppPArgb,
-            //                              imageAfterBitsHandle.AddrOfPinnedObject());
-
             //afterPicture.Image = imageAfterBitmap;
         }
 
@@ -143,7 +154,7 @@ namespace OctreeReduction
             R = (color & 0xff0000) >> 16;
             G = (color & 0xff00) >> 8;
             B = (color & 0xff);
-            return new Color(R, G, B, 0);
+            return new Color(R, G, B);
 
         }
 

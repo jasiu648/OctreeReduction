@@ -44,24 +44,24 @@
             // 
             // mainPicture
             // 
-            this.mainPicture.Location = new System.Drawing.Point(48, 28);
+            this.mainPicture.Location = new System.Drawing.Point(12, 20);
             this.mainPicture.Name = "mainPicture";
-            this.mainPicture.Size = new System.Drawing.Size(460, 290);
+            this.mainPicture.Size = new System.Drawing.Size(600, 338);
             this.mainPicture.TabIndex = 0;
             this.mainPicture.TabStop = false;
             this.mainPicture.Click += new System.EventHandler(this.pictureBox1_Click);
             // 
             // afterPicture
             // 
-            this.afterPicture.Location = new System.Drawing.Point(648, 28);
+            this.afterPicture.Location = new System.Drawing.Point(602, 344);
             this.afterPicture.Name = "afterPicture";
-            this.afterPicture.Size = new System.Drawing.Size(460, 290);
+            this.afterPicture.Size = new System.Drawing.Size(600, 338);
             this.afterPicture.TabIndex = 1;
             this.afterPicture.TabStop = false;
             // 
             // alongPicture
             // 
-            this.alongPicture.Location = new System.Drawing.Point(648, 355);
+            this.alongPicture.Location = new System.Drawing.Point(31, 392);
             this.alongPicture.Name = "alongPicture";
             this.alongPicture.Size = new System.Drawing.Size(460, 290);
             this.alongPicture.TabIndex = 2;
@@ -126,7 +126,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1179, 680);
+            this.ClientSize = new System.Drawing.Size(1242, 680);
             this.Controls.Add(this.label3);
             this.Controls.Add(this.textBox1);
             this.Controls.Add(this.reduceButton);

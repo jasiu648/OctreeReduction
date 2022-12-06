@@ -4,6 +4,7 @@ using System.Linq;
 using System.Reflection.Metadata.Ecma335;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml.Linq;
 
 namespace OctreeReduction
 {
@@ -16,13 +17,13 @@ namespace OctreeReduction
 
         public OctreeNode(int level, Quantizer parent)
         {
-            this.color = new Color(0, 0, 0, 0);
+            this.color = new Color(0, 0, 0);
             this.pixelCount = 0;
             this.palletteIndex = 0;
             this.childrenNodes = new OctreeNode[8];
 
             if (level < parent.MAX_DEPTH - 1)
-                parent.AddLevelNode(level, this);
+                parent.Levels[level].Add(this);
         }
 
         public bool IsLeaf() => pixelCount > 0;
@@ -30,7 +31,9 @@ namespace OctreeReduction
             List<OctreeNode> Leaves = new List<OctreeNode>();
             foreach(var child in childrenNodes)
             {
-                if(child is null) continue;
+                if(child is null) 
+                    continue;
+
                 if (child.IsLeaf())
                 {
                     Leaves.Add(child);
@@ -48,9 +51,8 @@ namespace OctreeReduction
             if(level >= parent.MAX_DEPTH)
             {
                 this.color.Red += color.Red;
-                this.color.Blue += color.Blue;
                 this.color.Green += color.Green;
-                if (this.color.Red > 255)
+                this.color.Blue += color.Blue;
                 pixelCount++;
                 return;
             }
@@ -82,8 +84,7 @@ namespace OctreeReduction
         {
             return new Color(color.Red / pixelCount,
                 color.Blue / pixelCount,
-                color.Green / pixelCount,
-                0);
+                color.Green / pixelCount);
         }
 
         public int GetPalletteIndex(Color color, int level)

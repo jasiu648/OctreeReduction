@@ -10,16 +10,14 @@ namespace OctreeReduction
     {
         public readonly int MAX_DEPTH = 8;
         public OctreeNode Root;
-        public Dictionary<int, OctreeNode[]> Levels;
+        public List<OctreeNode>[] Levels;
         public Quantizer(int maxDepth = 8) 
         {
-            Levels = new Dictionary<int, OctreeNode[]>();
             MAX_DEPTH = maxDepth;
+            Levels = new List<OctreeNode>[MAX_DEPTH];
 
-            for (int i = 0; i < MAX_DEPTH; i++)
-            {
-                Levels.Add(i, new OctreeNode[8]);
-            }
+            for (int i = 0; i < MAX_DEPTH - 1; i++)
+                Levels[i] = new List<OctreeNode>();
 
             Root = new OctreeNode(0, this);
         }
@@ -29,30 +27,16 @@ namespace OctreeReduction
             return Root.GetLeaves(); 
         }
 
-        public void AddLevelNode(int level, OctreeNode node)
-        {
-            for(int i = 0; i < 8; i++)
-            {
-                if (Levels[level][i] is not null)
-                {
-                    Levels[level][i] = node;
-                    break;
-                }
-
-            }
-        }
-
         public void AddColor(Color color)
         {
             Root.AddColor(color, 0, this);
-
         }
 
         public List<Color> MakePalette(int colorCount) 
         {
             List<Color> Palette = new List<Color>();
             int paletteIndex = 0;
-            int leafCount = Root.GetLeaves().Count;
+            int leafCount = GetLeaves().Count;
             
             for(int i = MAX_DEPTH - 1; i >= 0; i--)
             {
@@ -69,7 +53,7 @@ namespace OctreeReduction
                     if (leafCount <= colorCount)
                         break;
 
-                    Levels[i] = new OctreeNode[8];
+                    Levels[i] = new List<OctreeNode>();
                 }
             }
 
