@@ -35,48 +35,43 @@ namespace OctreeReduction
             LoadImage(DEFAULT_IMAGE_PATH);
             imageColors = new Color[imageHeight * imageWidth];
         }
-        private void button1_Click(object sender, EventArgs e)
-        {
-            GenerateHSV();
-        }
+        //private void button1_Click(object sender, EventArgs e)
+        //{
+        //    GenerateHSV();
+        //}
 
-        private void trackBar1_ValueChanged(object sender, EventArgs e)
-        {
-            Value = trackBar1.Value;
-            trackLabel.Text = Value.ToString();
-        }
-        public void GenerateHSV()
-        {
-            hsvBitmap = new Bitmap(300, 300);
-            HSVbox.Image = hsvBitmap;
+        //public void GenerateHSV()
+        //{
+        //    hsvBitmap = new Bitmap(300, 300);
+        //    HSVbox.Image = hsvBitmap;
 
-            int middle = 150;
-            int radius = 100;
-            int radiusS = radius * radius;
-            for (int x = 0; x < 300; x++)
-                for (int y = 0; y < 300; y++)
-                {
+        //    int middle = 150;
+        //    int radius = 100;
+        //    int radiusS = radius * radius;
+        //    for (int x = 0; x < 300; x++)
+        //        for (int y = 0; y < 300; y++)
+        //        {
                     
-                    if((x - middle) * (x - middle) + (y-middle) * (y - middle) < radiusS)
-                    {                           
-                        double h1 = Math.Asin( (middle - x) / Math.Sqrt((y - middle) * (y - middle) + (x - middle) * (x - middle)));
+        //            if((x - middle) * (x - middle) + (y-middle) * (y - middle) < radiusS)
+        //            {                           
+        //                double h1 = Math.Asin( (middle - x) / Math.Sqrt((y - middle) * (y - middle) + (x - middle) * (x - middle)));
                         
-                        h1 += (Math.PI / 2);
-                        double h = h1 * (180 / Math.PI);
-                        if(y > middle)
-                        {
-                            h = h + 2* (180 - h);
-                        }
-                        if (x == middle && y == middle)
-                            h = 0;
-                        hsvBitmap.SetPixel(x, y, HSV.HSV.HsvToRgb(h, Math.Sqrt((y - middle) * (y - middle) + (x - middle) * (x - middle)) / 100, (double)Value / 100));
-                    }
-                    else
-                    {
-                        hsvBitmap.SetPixel(x, y, System.Drawing.Color.White);
-                    }
-                }
-        }
+        //                h1 += (Math.PI / 2);
+        //                double h = h1 * (180 / Math.PI);
+        //                if(y > middle)
+        //                {
+        //                    h = h + 2* (180 - h);
+        //                }
+        //                if (x == middle && y == middle)
+        //                    h = 0;
+        //                hsvBitmap.SetPixel(x, y, HSV.HSV.HsvToRgb(h, Math.Sqrt((y - middle) * (y - middle) + (x - middle) * (x - middle)) / 100, (double)Value / 100));
+        //            }
+        //            else
+        //            {
+        //                hsvBitmap.SetPixel(x, y, System.Drawing.Color.White);
+        //            }
+        //        }
+        //}
 
         private void pictureBox1_Click(object sender, EventArgs e)
         {
@@ -112,7 +107,7 @@ namespace OctreeReduction
         private void reduceButton_Click(object sender, EventArgs e)
         {
             Reduce();
-            ReduceAlong();
+            //ReduceAlong();
         }
 
         private void ReduceAlong()
@@ -143,7 +138,7 @@ namespace OctreeReduction
                     color2 = paletteAlong[index];
                     imageAlongBitmap.SetPixel(x, y, System.Drawing.Color.FromArgb(color2.Red, color2.Green, color2.Blue));
                 }
-            alongPicture.Image = imageAlongBitmap;
+            //alongPicture.Image = imageAlongBitmap;
         }
         private void Reduce()
         {
