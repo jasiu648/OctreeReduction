@@ -55,6 +55,7 @@
             this.afterPicture.Margin = new System.Windows.Forms.Padding(6);
             this.afterPicture.Name = "afterPicture";
             this.afterPicture.Size = new System.Drawing.Size(1226, 818);
+            this.afterPicture.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
             this.afterPicture.TabIndex = 1;
             this.afterPicture.TabStop = false;
             // 
@@ -87,6 +88,7 @@
             this.textBox1.Name = "textBox1";
             this.textBox1.Size = new System.Drawing.Size(231, 47);
             this.textBox1.TabIndex = 8;
+            this.textBox1.Text = "256";
             this.textBox1.TextChanged += new System.EventHandler(this.textBox1_TextChanged);
             // 
             // label3

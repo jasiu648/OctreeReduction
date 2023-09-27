@@ -6,11 +6,12 @@ using System.Threading.Tasks;
 
 namespace OctreeReduction
 {
-    public class Quantizer
+    public class Quantizer : IQuantizer
     {
         public readonly int MAX_DEPTH = 8;
         public OctreeNode Root;
         public List<OctreeNode>[] Levels;
+        
         public Quantizer(int maxDepth = 8) 
         {
             MAX_DEPTH = maxDepth;
@@ -104,6 +105,33 @@ namespace OctreeReduction
         public int GetPaletteIndex(Color color)
         {
             return Root.GetPalletteIndex(color, 0);
+        }
+
+        public Bitmap Quantize(Bitmap imageBitmap, int imageWidth, int imageHeight, int colorsCount)
+        {
+            var imageColors = new Color[imageHeight * imageWidth];
+            for (int x = 0; x < imageWidth; x++)
+                for (int y = 0; y < imageHeight; y++)
+                {
+                    var color = imageBitmap.GetPixel(x, y);
+                    imageColors[x + y * imageWidth] = new Color(color.R, color.G, color.B);
+                    AddColor(new Color(color.R, color.G, color.B));
+                }
+;
+            var palette = MakePalette(colorsCount);
+
+            var imageAfterBitmap = new Bitmap(imageWidth, imageHeight);
+
+
+            for (int x = 0; x < imageWidth; x++)
+                for (int y = 0; y < imageHeight; y++)
+                {
+                    var index = GetPaletteIndex(imageColors[x + y * imageWidth]);
+                    var color = palette[index];
+                    imageAfterBitmap.SetPixel(x, y, System.Drawing.Color.FromArgb(color.Red, color.Green, color.Blue));
+                }
+
+            return imageAfterBitmap;
         }
     }
 }

@@ -1,10 +1,12 @@
 
+using System.Drawing.Imaging;
+
 namespace OctreeReduction
 {
     public partial class Form1 : Form
     {
         private Bitmap imageBitmap;
-        private Color[] imageColors;
+        
 
         private int imageHeight;
         private int imageWidth;
@@ -15,14 +17,16 @@ namespace OctreeReduction
 
         private int colorsCount = 256;
 
+        private IQuantizer quantizer;
 
         public Form1()
         {
-            imageHeight = 300;
-            imageWidth = 460;
+            
             InitializeComponent();
             LoadImage(DEFAULT_IMAGE_PATH);
-            imageColors = new Color[imageHeight * imageWidth];
+            
+
+            quantizer = new Quantizer();
         }
 
         private void importButton_Click(object sender, EventArgs e)
@@ -42,8 +46,10 @@ namespace OctreeReduction
         {
             Image image = new Bitmap(fileName);
 
-            imageBitmap = new Bitmap(imageWidth,
-                                          imageHeight);
+            imageBitmap = new Bitmap(image.Width,image.Height);
+
+            imageWidth = image.Width;
+            imageHeight = image.Height;
 
             Graphics graphics = Graphics.FromImage(imageBitmap);
             graphics.DrawImage(image, 0, 0, imageWidth, imageHeight);
@@ -58,29 +64,9 @@ namespace OctreeReduction
 
         private void QuantizeBitmap()
         {
-            var OctreeAfter = new Quantizer(8);
+            quantizer = new Quantizer(8);
 
-            for (int x = 0; x < imageWidth; x++)
-                for (int y = 0; y < imageHeight; y++)
-                {
-                    var color = imageBitmap.GetPixel(x, y);
-                    imageColors[x + y * imageWidth] = new Color(color.R, color.G, color.B);
-                    OctreeAfter.AddColor(new Color(color.R,color.G,color.B));
-                }
-;
-            var palette = OctreeAfter.MakePalette(colorsCount);
-
-            imageAfterBitmap = new Bitmap(imageWidth,
-                                          imageHeight);
-
-            
-            for (int x = 0; x < imageWidth; x++)
-                for (int y = 0; y < imageHeight; y++)
-                {
-                    var index = OctreeAfter.GetPaletteIndex(imageColors[x + y * imageWidth]);
-                    var color = palette[index];
-                    imageAfterBitmap.SetPixel(x, y, System.Drawing.Color.FromArgb(color.Red, color.Green, color.Blue));
-                }
+            imageAfterBitmap = quantizer.Quantize(imageBitmap, imageWidth, imageHeight, colorsCount);
             afterPicture.Image = imageAfterBitmap;
         }
 
@@ -98,7 +84,15 @@ namespace OctreeReduction
 
         private void saveButton_Click(object sender, EventArgs e)
         {
+            SaveFileDialog dialog = new SaveFileDialog();
+            dialog.Filter = "Image Files|*.jpg;*.jpeg;*.png;*.gif;*.tif;...";
+            dialog.InitialDirectory = Path.GetFullPath("..\\..\\..\\images");
+            dialog.Title = "Please select an image file.";
 
+            if (dialog.ShowDialog() == DialogResult.OK)
+            {
+                imageAfterBitmap.Save(dialog.FileName);
+            }
         }
     }
 }

@@ -23,7 +23,7 @@ namespace OctreeReduction
             this.childrenNodes = new OctreeNode[8];
 
             if (level < parent.MAX_DEPTH - 1)
-                parent.Levels[level].Add(this);
+                parent.AddLevel(this,level);
         }
 
         public bool IsLeaf() => pixelCount > 0;
