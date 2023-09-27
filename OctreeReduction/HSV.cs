@@ -44,9 +44,8 @@ namespace HSV
                 return Color.FromArgb(255, v, p, q);
         }
 
-        public static Color HsvToRgb(double h, double S, double V)
+        public static Color HsvToRgb(double H, double S, double V)
         {
-            double H = h;
             while (H < 0) { H += 360; };
             while (H >= 360) { H -= 360; };
             double R, G, B;
@@ -143,5 +142,43 @@ namespace HSV
             if (i > 255) return 255;
             return i;
         }
+
+        //private void button1_Click(object sender, EventArgs e)
+        //{
+        //    GenerateHSV();
+        //}
+
+        //public void GenerateHSV()
+        //{
+        //    hsvBitmap = new Bitmap(300, 300);
+        //    HSVbox.Image = hsvBitmap;
+
+        //    int middle = 150;
+        //    int radius = 100;
+        //    int radiusS = radius * radius;
+        //    for (int x = 0; x < 300; x++)
+        //        for (int y = 0; y < 300; y++)
+        //        {
+
+        //            if((x - middle) * (x - middle) + (y-middle) * (y - middle) < radiusS)
+        //            {                           
+        //                double h1 = Math.Asin( (middle - x) / Math.Sqrt((y - middle) * (y - middle) + (x - middle) * (x - middle)));
+
+        //                h1 += (Math.PI / 2);
+        //                double h = h1 * (180 / Math.PI);
+        //                if(y > middle)
+        //                {
+        //                    h = h + 2* (180 - h);
+        //                }
+        //                if (x == middle && y == middle)
+        //                    h = 0;
+        //                hsvBitmap.SetPixel(x, y, HSV.HSV.HsvToRgb(h, Math.Sqrt((y - middle) * (y - middle) + (x - middle) * (x - middle)) / 100, (double)Value / 100));
+        //            }
+        //            else
+        //            {
+        //                hsvBitmap.SetPixel(x, y, System.Drawing.Color.White);
+        //            }
+        //        }
+        //}
     }
 }
