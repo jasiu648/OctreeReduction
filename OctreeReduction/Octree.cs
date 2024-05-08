@@ -23,7 +23,7 @@ namespace OctreeReduction
             this.childrenNodes = new OctreeNode[8];
 
             if (level < parent.MAX_DEPTH - 1)
-                parent.AddLevel(this,level);
+                parent.Levels[level].Add(this);
         }
 
         public bool IsLeaf() => pixelCount > 0;
@@ -83,8 +83,8 @@ namespace OctreeReduction
         public Color GetColor()
         {
             return new Color(color.Red / pixelCount,
-                color.Blue / pixelCount,
-                color.Green / pixelCount);
+                color.Green / pixelCount,
+                color.Blue / pixelCount);
         }
 
         public int GetPalletteIndex(Color color, int level)
