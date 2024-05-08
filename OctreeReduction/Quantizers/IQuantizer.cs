@@ -1,5 +1,4 @@
-﻿
-namespace OctreeReduction
+﻿namespace OctreeReduction.Quantizers
 {
     public interface IQuantizer
     {

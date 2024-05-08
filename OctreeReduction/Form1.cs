@@ -1,5 +1,6 @@
 
 using System.Drawing.Imaging;
+using OctreeReduction.Quantizers;
 
 namespace OctreeReduction
 {

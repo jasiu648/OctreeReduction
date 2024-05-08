@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace OctreeReduction
+namespace OctreeReduction.Utils
 {
     public class Color
     {
@@ -13,9 +13,9 @@ namespace OctreeReduction
         public int Blue { get; set; }
         public Color(int red, int green, int blue)
         {
-            this.Red = red;
-            this.Green = green;
-            this.Blue = blue;
+            Red = red;
+            Green = green;
+            Blue = blue;
         }
     }
 }

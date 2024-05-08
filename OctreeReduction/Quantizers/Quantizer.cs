@@ -1,18 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Color = OctreeReduction.Utils.Color;
 
-namespace OctreeReduction
+namespace OctreeReduction.Quantizers
 {
     public class Quantizer : IQuantizer
     {
         public readonly int MAX_DEPTH = 8;
         public OctreeNode Root;
         public List<OctreeNode>[] Levels;
-        
-        public Quantizer(int maxDepth = 8) 
+
+        public Quantizer(int maxDepth = 8)
         {
             MAX_DEPTH = maxDepth;
             Levels = new List<OctreeNode>[MAX_DEPTH];
@@ -25,7 +21,7 @@ namespace OctreeReduction
 
         public List<OctreeNode> GetLeaves()
         {
-            return Root.GetLeaves(); 
+            return Root.GetLeaves();
         }
 
         public void AddColor(Color color)
@@ -64,19 +60,19 @@ namespace OctreeReduction
 
             }
         }
-        public List<Color> MakePalette(int colorCount) 
+        public List<Color> MakePalette(int colorCount)
         {
             List<Color> Palette = new List<Color>();
             int paletteIndex = 0;
             int leafCount = GetLeaves().Count;
-            
-            for(int i = MAX_DEPTH - 1; i >= 0; i--)
+
+            for (int i = MAX_DEPTH - 1; i >= 0; i--)
             {
                 if (Levels[i] is not null)
                 {
-                    foreach(var node in Levels[i])
+                    foreach (var node in Levels[i])
                     {
-                        if(node is null) continue;
+                        if (node is null) continue;
 
                         leafCount -= node.RemoveLeaves();
                         if (leafCount <= colorCount)
@@ -89,7 +85,7 @@ namespace OctreeReduction
                 }
             }
 
-            foreach(var node in Root.GetLeaves())
+            foreach (var node in Root.GetLeaves())
             {
                 if (paletteIndex >= colorCount)
                     break;

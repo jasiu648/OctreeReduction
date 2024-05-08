@@ -1,12 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection.Metadata.Ecma335;
-using System.Text;
-using System.Threading.Tasks;
-using System.Xml.Linq;
+﻿using OctreeReduction.Utils;
+using Color = OctreeReduction.Utils.Color;
 
-namespace OctreeReduction
+namespace OctreeReduction.Quantizers
 {
     public class OctreeNode
     {
@@ -17,21 +12,22 @@ namespace OctreeReduction
 
         public OctreeNode(int level, Quantizer parent)
         {
-            this.color = new Color(0, 0, 0);
-            this.pixelCount = 0;
-            this.palletteIndex = 0;
-            this.childrenNodes = new OctreeNode[8];
+            color = new Color(0, 0, 0);
+            pixelCount = 0;
+            palletteIndex = 0;
+            childrenNodes = new OctreeNode[8];
 
             if (level < parent.MAX_DEPTH - 1)
                 parent.Levels[level].Add(this);
         }
 
         public bool IsLeaf() => pixelCount > 0;
-        public List<OctreeNode> GetLeaves() {
+        public List<OctreeNode> GetLeaves()
+        {
             List<OctreeNode> Leaves = new List<OctreeNode>();
-            foreach(var child in childrenNodes)
+            foreach (var child in childrenNodes)
             {
-                if(child is null) 
+                if (child is null)
                     continue;
 
                 if (child.IsLeaf())
@@ -48,7 +44,7 @@ namespace OctreeReduction
 
         public void AddColor(Color color, int level, Quantizer parent)
         {
-            if(level >= parent.MAX_DEPTH)
+            if (level >= parent.MAX_DEPTH)
             {
                 this.color.Red += color.Red;
                 this.color.Green += color.Green;
@@ -97,7 +93,7 @@ namespace OctreeReduction
             if (childrenNodes[index] is not null)
                 return childrenNodes[index].GetPalletteIndex(color, level + 1);
 
-            foreach(var child in childrenNodes)
+            foreach (var child in childrenNodes)
             {
                 if (child is not null)
                     return child.GetPalletteIndex(color, level + 1);
@@ -108,20 +104,20 @@ namespace OctreeReduction
         public int RemoveLeaves()
         {
             int result = 0;
-            foreach(var child in childrenNodes)
+            foreach (var child in childrenNodes)
             {
-                if(child is not null)
+                if (child is not null)
                 {
-                    this.color.Red += child.color.Red;
-                    this.color.Blue += child.color.Blue;
-                    this.color.Green += child.color.Green;
-                    this.pixelCount += child.pixelCount;
+                    color.Red += child.color.Red;
+                    color.Blue += child.color.Blue;
+                    color.Green += child.color.Green;
+                    pixelCount += child.pixelCount;
                     result++;
                 }
             }
             return result - 1;
         }
-        
+
     }
- 
+
 }
