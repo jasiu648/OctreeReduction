@@ -1,5 +1,4 @@
 
-using System.Drawing.Imaging;
 using OctreeReduction.Quantizers;
 
 namespace OctreeReduction
@@ -7,26 +6,17 @@ namespace OctreeReduction
     public partial class Form1 : Form
     {
         private Bitmap imageBitmap;
-        
-
         private int imageHeight;
         private int imageWidth;
-
         private Bitmap imageAfterBitmap;
-
-        private readonly string DEFAULT_IMAGE_PATH = "..\\..\\..\\images\\nuke.jpg";
-
+        private static readonly string ImagesDirectory = Path.Combine(AppContext.BaseDirectory, "assets", "images");
         private int colorsCount = 256;
-
         private IQuantizer quantizer;
 
         public Form1()
         {
-            
             InitializeComponent();
-            LoadImage(DEFAULT_IMAGE_PATH);
-            
-
+            LoadImage(Path.Combine(ImagesDirectory, "nuke.jpg"));
             quantizer = new Quantizer();
         }
 
@@ -34,7 +24,9 @@ namespace OctreeReduction
         {
             OpenFileDialog dialog = new OpenFileDialog();
             dialog.Filter = "Image Files|*.jpg;*.jpeg;*.png;*.gif;*.tif;...";
-            dialog.InitialDirectory = Path.GetFullPath("..\\..\\..\\images");
+            dialog.InitialDirectory = Directory.Exists(ImagesDirectory)
+                ? ImagesDirectory
+                : Environment.GetFolderPath(Environment.SpecialFolder.MyPictures);
             dialog.Title = "Please select an image file.";
 
             if (dialog.ShowDialog() == DialogResult.OK)
@@ -45,16 +37,14 @@ namespace OctreeReduction
 
         private void LoadImage(string fileName)
         {
-            Image image = new Bitmap(fileName);
-
-            imageBitmap = new Bitmap(image.Width,image.Height);
-
+            using Image image = new Bitmap(fileName);
+            imageBitmap?.Dispose();
+            imageBitmap = new Bitmap(image.Width, image.Height);
             imageWidth = image.Width;
             imageHeight = image.Height;
 
-            Graphics graphics = Graphics.FromImage(imageBitmap);
+            using Graphics graphics = Graphics.FromImage(imageBitmap);
             graphics.DrawImage(image, 0, 0, imageWidth, imageHeight);
-
             mainPicture.Image = imageBitmap;
         }
 
@@ -73,13 +63,20 @@ namespace OctreeReduction
 
         private void textBox1_TextChanged(object sender, EventArgs e)
         {
-            if(textBox1.Text.Length > 0)
+            if (textBox1.Text.Length > 0)
             {
-                if (int.TryParse(textBox1.Text, out int count))
+                if (int.TryParse(textBox1.Text, out int count) && count > 0 && count <= 1024)
+                {
                     colorsCount = count;
-
+                }
                 else
-                    MessageBox.Show("Please provide valid number of colors");
+                {
+                    MessageBox.Show(
+                        "Please provide a whole number between 1 and 1024.",
+                        "Invalid color count",
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Warning);
+                }
             }
         }
 
@@ -87,10 +84,12 @@ namespace OctreeReduction
         {
             SaveFileDialog dialog = new SaveFileDialog();
             dialog.Filter = "Image Files|*.jpg;*.jpeg;*.png;*.gif;*.tif;...";
-            dialog.InitialDirectory = Path.GetFullPath("..\\..\\..\\images");
+            dialog.InitialDirectory = Directory.Exists(ImagesDirectory)
+                ? ImagesDirectory
+                : Environment.GetFolderPath(Environment.SpecialFolder.MyPictures);
             dialog.Title = "Please select an image file.";
 
-            if (dialog.ShowDialog() == DialogResult.OK)
+            if (dialog.ShowDialog() == DialogResult.OK && imageAfterBitmap is not null)
             {
                 imageAfterBitmap.Save(dialog.FileName);
             }
